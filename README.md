@@ -302,9 +302,7 @@ TODO
 
 ## Can I use the SBMS0 with disconnect devices other than the DSSR20?
 
-Yes - any device that can disconnect current in response to the SBMS0 EXT IO4 output can be used. e.g. a solar controller (if you insist on using MPPT, you can!), mains or DC-DC charger, or some other solid state or electromechanical relay (for a electromechanical relay, ensure a [flyback diode](https://www.google.com/search?q=electromechanical+relay+flyback+diode) is installed).
-
-TODO: confirm EXT IO4 is open-collector; document EXT IO4 types (SBMS0 config)
+Yes - any device that can disconnect current in response to an SBMS0 EXTIO output can be used. e.g. a solar controller (if you insist on using MPPT, you can!), mains or DC-DC charger, or some other solid state or electromechanical relay (for a electromechanical relay, ensure a [flyback diode](https://www.google.com/search?q=electromechanical+relay+flyback+diode) is installed).
 
 ## Can the SBMS0 survive a battery disconnection when PV is still connected?
 
