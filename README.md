@@ -73,7 +73,7 @@ The following diagram shows a basic PV power system, consisting of:
 2. "Battery box" with various fusing, control and measurement functions
 3. Loads (AC and DC)
 
-![SBMS0 wiring](SBMS0 wiring.png)
+![SBMS0 wiring](SBMS0_wiring.png)
 
 The items in green are measured by the SBMS0 (battery cell voltages, load and charge currents), and those in red are controlled by the SBMS0. The remaining components within the battery box are protective devices.
 
@@ -268,7 +268,7 @@ TODO: Also on the board are two non-isolated? ADC inputs; 0-60V as referenced to
 
 The DSSR20 is a low-cost solid state switch with one or two twists. The first twist is the presence of an "ideal" (low-loss) diode in the PV-Battery path: this is advantageous in terms of mitigating certain types of failures that can occur on the PV side such as cabling shorts. The second twist is that it is available in a version that adds facility to switch a secondary resistive load - very useful for "heating diversion" as described above. The PV Disconnect functional diagram is as follows:
 
-![DSSR20 ideal diagram]( DSSR20 ideal diagram.png)
+![DSSR20 ideal diagram](DSSR20_ideal_diagram.png)
 
 The Heat diversion path is not protected by an ideal diode, and is not designed to connect to an "active load" - one that can source current back to the PV. i.e. do not connect a power source such as a battery to this connection; passive loads only. Further, the load is not rated for reactive (inductive or capacitive) loads, so no motors or inverters. The Heat diversion control input is separate to the Battery control input; in the intended use case they would be logically inverted. i.e. when Battery is on, Heat is off and vice-versa. The DEXT16 module implements this logic given a single EXTIO output from the SBMS0. The DEXT16 also provides screw terminals and can make for a tidier installation when multiple DSSR20s are used.
 
