@@ -163,13 +163,15 @@ These parameters are configurable in the ISL94203; refer the datasheet for detai
 
 ## Input/Output Connections
 
-Put simply, the SBMS0 has two relatively protected voltage measuring inputs for the load and charging shunts and one resistance measuring input for a temperature sensor, and multiple digital outputs that act as low-current switches.
+Put simply, the SBMS0 has two relatively protected voltage measuring inputs for the load and charging shunts and one resistance measuring input for a temperature sensor, and multiple digital outputs that act as low-current switches. The digital outputs *must* have external current limiting (typically, a resistor).
 
-In more detail: all IO connectors are differential: they have separate positive and negative connections, as opposed to a single-ended IO with a common/shared ground. This is advantageous for better noise rejection and also ensures all connections are isolated including from each other (up to 76V for the analogue inputs). The ADC and PV inputs are directly connected to current-sense amplifier sense inputs; these are both bidirectional - can measure current flow in both directions. The PV shunt is normally expected to have current flowing from the PV to battery so the polarity of the PV inputs is "reversed" to reflect this usual current direction: thus PVp is connected to the "more positive" side even though technically it's connected to the negative sense input.
+In more detail: all IO connectors are differential: they have separate positive and negative connections, as opposed to a single-ended IO with a common/shared ground. This is advantageous for better noise rejection and also ensures all connections are isolated including from each other (up to 76V for the analogue inputs). The ADC and PV inputs are directly connected to current-sense amplifier sense inputs; the ADC is bidirectional - can measure current flow in both directions - and the PV input is unidirectional (able to measure positive values only, as charge current normally only flows from PV to battery). The latter has some implications with respect to calibrating any measurement offset errors, discussed in shunt calibration, below.
 
-The optocoupled outputs are isolated Darlington transistor outputs and essentially behave as a switch that can sink up to a *maximum* of 150 mA (and 300V, ref. TLP187 datasheet) - under 50mA is recommended by ElectroDacus ([ref](https://groups.google.com/g/electrodacus/c/2OB3qrNVyYU/m/HE2ZlcKOBAAJ)). Polarity is significant - the negative 'n' side of the output must be at the lower potential, typically ground; be aware the optocoupler also has reverse biased diode across its output junctions so if the digital output is connected in reverse, it'll be "always on".
+The optocoupled digital outputs are isolated Darlington transistor outputs and essentially behave as a switch that can sink up to a *maximum* of 150 mA (and 300V, ref. TLP187 datasheet) - under 50mA is recommended by ElectroDacus ([ref](https://groups.google.com/g/electrodacus/c/2OB3qrNVyYU/m/HE2ZlcKOBAAJ)). Polarity is significant - the negative 'n' side of the output must be at the lower potential, typically ground; be aware the optocoupler also has reverse biased diode across its output junctions so if the digital output is connected in reverse, it'll be "always on".
 
 ![TLP187](TLP187.png)
+
+The outputs **must** be externally current limited - connecting the output directly across power and ground will result in a failed optocoupler. Though many controlled devices, such as a BatteryProtect, incorporate current limiting, if any part of the switched circuit is connected to battery positive then it's probably a good idea to include a 1-10kΩ resistor in series.
 
 The outputs can be reconfigured to suit multiple functions, described in the next section. The default configuration is given in the following table:
 
@@ -177,11 +179,11 @@ The outputs can be reconfigured to suit multiple functions, described in the nex
 | ---- | ---- | ---- | ---- |
 | ADC | Analogue Input | Primary (battery) shunt | current sense input |
 | PV | Analogue Input | Charge (PV) shunt (optional) | current sense input |
-| XT | Analogue Input | Thermocouple input (optional) | 10k Ω input impedance |
-| EXTIO3 | Digital output | Default: load on/off | optocoupled |
-| EXTIO4 | Digital output | Default: charge on/off | optocoupled |
-| EXTIO5 | Digital output | Default: unused | optocoupled |
-| EXTIO6 | Digital output | Default: 'fault' | optocoupled |
+| XT | Analogue Input | Thermocouple input (optional) | 10kΩ input impedance |
+| EXTIO3 | Digital Output | Default: load on/off | optocoupled |
+| EXTIO4 | Digital Output | Default: charge on/off | optocoupled |
+| EXTIO5 | Digital Output | Default: unused | optocoupled |
+| EXTIO6 | Digital Output | Default: 'fault' | optocoupled |
 
 EXTIO1 and EXTIO2 are skipped (used for isolated data I2C).
 
