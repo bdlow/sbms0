@@ -193,9 +193,9 @@ The SBMS0 is designed to use conventional current shunts for measuring current t
 
 Shunts must be selected to be able to carry the expected current however larger rated shunts will result a more coarse measurement resolution by the SBMS0, and thus a less accurate SoC calculation. Most shunts must be rated to at least 150% of the expected load, 200% for elevated temperatures - refer to the shunt manufacturer for detailed derating specifications.
 
-The range of the SBMS0 inputs is +/- 90mV, with a resolution of 16 bits, or 2^15 = 32,768 steps; or 90mV/2^15 = 2.747 uV per step. Note that the ADC will have some noise, typically a few steps.
+The range of the SBMS0 inputs is +/- 90mV, with a resolution of 16 bits ~= +/- 2^15 (32,768) steps; or 90mV/2^15 = 2.75 uV per step. Note that any ADC has inherent inaccuracies due to electrical noise and offset errors, typically at least a few steps. The SBMS0 can compensate for some of these errors. TODO: verify whether the PV ADC is single-ended (i.e. [0-64k)); shunt calibration procedure.
 
-As an example of scale and resolution, for a system with a maximum continuous load current of around 150A, a load shunt must be rated to at least 225A. A 250A/75mV shunt will suffice and will give a range of +/- 75mv/90mV * 2^15 = 25,869 steps; which equates to 250A/25,869 ~= 0.01 A/step, or a resolution of about 10mA. The SBMS0 could measure transient loads up to 300A before going over-range.
+As an example of scale and resolution, for a system with a maximum continuous load current of around 150A, a load shunt must be rated to at least 225A (more, say 300A, if the system is in a warm environment). A 250A/75mV shunt will give a range of +/- 75mv/90mV * 2^15 = 25,869 steps; which equates to 250A/25,869 ~= 0.01 A/step, or a resolution of about 10mA. The SBMS0 could measure transient loads up to 300A before going over-range.
 
 (TODO: unknown what filtering or over-sampling is done to provide finer effective resolution.)
 
@@ -218,13 +218,13 @@ Each of the four EXTIO outputs can be set to one of six different modes or "type
 #### Type 1 HVD - High Voltage Disconnect
 
 * charging control
-* voltage sense: disconnects when battery reaches x V
+* voltage sense: disconnects when battery reaches (TODO, adjustable?) xx V
 * used to control any charger that can be DSSR20, an MPPT solar charger with remote ON/OFF, a grid charger or a battery to battery charger
 
 #### Type 2 LVD - Low Voltage Disconnect
 
 * load disconnect
-* voltage sense: disconnects when battery reaches (TODO) xx V
+* voltage sense: disconnects when battery reaches (TODO, adjustable?) xx V
 * control remote on/off for load devices such as an inverter or Victron Battery Protect
 
 #### Type 3 High SoC Alarm
