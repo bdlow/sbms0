@@ -238,7 +238,7 @@ Each of the four EXTIO outputs can be set to one of six different modes or "type
 
 * secondary high or low voltage limits (under voltage or over voltage lock) reached
 * can be used as backup in the event a controlled charger or load fails to respond
-* requires a remote triggered circuit breaker or similar device
+* should be connected to a buzzer or similar alerting mechanism, and/or a remote triggered circuit breaker or similar device (the latter are not easy to come by)
 
 #### Type 6 Dual PV Control
 * switch an optional additional charging source
