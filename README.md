@@ -39,7 +39,7 @@
 
 <!-- /TOC -->
 
-This is an unofficial guide to the ElectroDacus Solar Battery Management System SBMS0. This document exists as I found the official documentation for the SBMS0 to be less than clear. It does NOT replace or override the official documentation, and may be completely wrong on multiple accounts (PRs welcome).
+**This is an <u>unofficial</u> guide to the ElectroDacus Solar Battery Management System SBMS0. This document exists as I found the official documentation for the SBMS0 to be less than clear. It does NOT replace or override the official documentation and may be completely wrong (PRs welcome).**
 
 The SBMS0 is a novel approach to managing solar-powered energy storage, produced by [ElectroDacus](https://electrodacus.com/) as an open-source hardware ([CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)) project (as of mid 2020 the schematic and software source code are not yet published). Dacian Todea, the project's lead and primary (sole?) contributor, has been developing various iterations of a solar battery management system since at least 2011. Dacian's not in the business of producing SBMS systems at commercial scale ("A few words are more than sufficient. It is my pleasure to be able to share knowledge." ([ref](https://groups.google.com/g/electrodacus/c/1bQlZ8quSP0/m/oNHQLPWaAgAJ))), as of late 2020 a business named [3D Brothers](https://3d-brothers.com/) are working on an [SBMS-based design](https://www.youtube.com/watch?v=MFbR4KenTuA) for commercial production.
 
