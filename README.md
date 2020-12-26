@@ -41,7 +41,7 @@
 
 **This is an <u>unofficial</u> guide to the ElectroDacus Solar Battery Management System SBMS0. This document exists as I found the official documentation for the SBMS0 to be less than clear. It does NOT replace or override the official documentation and may be completely wrong (PRs welcome).**
 
-The SBMS0 is a novel approach to managing solar-powered energy storage, produced by [ElectroDacus](https://electrodacus.com/) as an open-source hardware ([CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)) project (as of mid 2020 the schematic and software source code are not yet published). Dacian Todea, the project's lead and primary (sole?) contributor, has been developing various iterations of a solar battery management system since at least 2011. Dacian's not in the business of producing SBMS systems at commercial scale ("A few words are more than sufficient. It is my pleasure to be able to share knowledge." ([ref](https://groups.google.com/g/electrodacus/c/1bQlZ8quSP0/m/oNHQLPWaAgAJ))), as of late 2020 a business named [3D Brothers](https://3d-brothers.com/) are working on an [SBMS-based design](https://www.youtube.com/watch?v=MFbR4KenTuA) for commercial production.
+The SBMS0 is a novel approach to managing solar-powered energy storage, produced by [ElectroDacus](https://electrodacus.com/) as an open-source hardware ([CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)) project (as of mid 2020 some hardware details such as PCB layout and the software source code are not yet published). Dacian Todea, the project's lead and primary (sole?) contributor, has been developing various iterations of a solar battery management system since at least 2011. Dacian's not in the business of producing SBMS systems at commercial scale ("A few words are more than sufficient. It is my pleasure to be able to share knowledge." ([ref](https://groups.google.com/g/electrodacus/c/1bQlZ8quSP0/m/oNHQLPWaAgAJ))), as of late 2020 a business named [3D Brothers](https://3d-brothers.com/) are working on an [SBMS-based design](https://www.youtube.com/watch?v=MFbR4KenTuA) for commercial production.
 
 The SBMS0 is the fourth (?) major design iteration and departs from earlier designs, and most commercial BMS, in separating out the controller from the power switching. The primary novelty for the SBMS0 is in not using any form of DC-DC conversion between the solar photovoltaic (PV) panel(s) and the battery - the principle being that *a PV input suitably matched to suitable battery chemistry* (e.g. LiFePO4) does not actually *require* any complex DC-DC conversion. Conventional wisdom is that some form of DC-DC conversion, such as a Maximum Power Point Tracking (MPPT) solar controller, is required to maximise power transfer from the PV to battery and/or safely charge the battery (e.g. lead-acid batteries have very particular charging requirements to maximise service life).
 
@@ -76,8 +76,6 @@ The following diagram shows a basic PV power system, consisting of:
 ![SBMS0 wiring](SBMS0_wiring.png)
 
 The items in green are measured by the SBMS0 (battery cell voltages, load and charge currents), and those in red are controlled by the SBMS0. The remaining components within the battery box are protective devices.
-
-
 
 ## Components
 
@@ -131,7 +129,9 @@ The main DC circuit breaker acts as both over current protection and main load d
 
 # SBMS0 Controller
 
-The SBMS0 undergoes periodic minor updates to the hardware, the following relates to the v02c version ca. early 2020. The version number is printed on the rear of the SBMS0 module.
+The SBMS0 undergoes periodic minor updates to the hardware, the following relates to the v02c version ca. late 2019 / early 2020 except where stated otherwise. The version number is printed on the rear of the SBMS0 module.
+
+A new minor revision, v03d, was introduced mid-2020. The main changes were a new "unified" 16-pin IO connector (green) and a 2x2 button layout.
 
 ## Connections
 
@@ -151,6 +151,8 @@ The provided cell monitoring 12-way ribbon cable is 28AWG (0.07mm^2) and does no
 
 The ISL94203 only reads its configuration on power-on - thus any parameter changes made on the SBMS0 will only take effect when the SBMS0 is power cycled by disconnecting and reconnecting the cell monitoring cable.
 
+The 12-way cable also supplies power to the SBMS0, from the battery being monitored. The power supply wires 1 (GND) and 11+12 (Positive) should be kept electrically separated from their neighbouring sense wires up to the battery so as to ensure the SBMS0 current draw does not affect the measured cell voltages. i.e. don't "piggyback" wires 1-2 or 10-12.
+
 ### Cell Balancing
 
 Cell balancing is achieved via a 24 Ω resistor switched across each cell by a FET controlled by the ISL94203; nominal balancing current is therefore 3.6 V / 24 Ω = 150 mA. Cell balancing is only enabled when:
@@ -167,9 +169,13 @@ Put simply, the SBMS0 has two relatively protected voltage measuring inputs for 
 
 In more detail: all IO connectors are differential: they have separate positive and negative connections, as opposed to a single-ended IO with a common/shared ground. This is advantageous for better noise rejection and also ensures all connections are isolated including from each other (up to 76V for the analogue inputs). The ADC and PV inputs are directly connected to current-sense amplifier sense inputs; the ADC is bidirectional - can measure current flow in both directions - and the PV input is unidirectional (able to measure positive values only, as charge current normally only flows from PV to battery). The latter has some implications with respect to calibrating any measurement offset errors, discussed in shunt calibration, below.
 
-The optocoupled digital outputs are isolated Darlington transistor outputs and essentially behave as a switch that can sink up to a *maximum* of 150 mA (and 300V, ref. TLP187 datasheet) - under 50mA is recommended by ElectroDacus ([ref](https://groups.google.com/g/electrodacus/c/2OB3qrNVyYU/m/HE2ZlcKOBAAJ)). Polarity is significant - the negative 'n' side of the output must be at the lower potential, typically ground; be aware the optocoupler also has reverse biased diode across its output junctions so if the digital output is connected in reverse, it'll be "always on".
+The optocoupled digital outputs are isolated Darlington transistor outputs and essentially behave as a switch that can sink up to a *maximum* of 150 mA - under 50mA is recommended by ElectroDacus ([ref](https://groups.google.com/g/electrodacus/c/2OB3qrNVyYU/m/HE2ZlcKOBAAJ)). 
+
+Revisions of the SBMS0 prior to v03d used TLP187 optocouplers, for which polarity is significant - the negative 'n' side of the output must be at the lower potential, typically ground; be aware the optocoupler has a reverse biased diode across its output junctions so if the digital output is connected in reverse, it'll be "always on".
 
 ![TLP187](TLP187.png)
+
+The mid-2020 v03d revision SBMS0 switched to using TLP172GM photorelays which are bidirectional (polarity doesn't matter) but otherwise functionally equivalent (maximum 110mA).
 
 The outputs **must** be externally current limited - connecting the output directly across power and ground will result in a failed optocoupler. Though many controlled devices, such as a BatteryProtect, incorporate current limiting, if any part of the switched circuit is connected to battery positive then it's probably a good idea to include a 1-10kΩ resistor in series.
 
@@ -260,13 +266,17 @@ Each of the four EXTIO outputs can be set to one of six different modes or "type
 
 ## Isolated Data Header
 
-This "connector" requires soldering the provided IDC box header, or individual wires to the SBMS0. This connector provides galvanically isolated USB, 3.3V UART, I2C and EXTIO5 and EXTIO6. (On later revisions of the SBMS0, EXTIO5 and EXTIO6 are moved to the main IO connector)
+This "connector" requires soldering the provided IDC box header, or individual wires to the SBMS0. This connector provides galvanically isolated USB, 3.3V UART, I2C and EXTIO5 and EXTIO6. (The v03d revision of the SBMS0 moved EXTIO5 and EXTIO6 to the main IO connector.)
 
 TODO: Also on the board are two non-isolated? ADC inputs; 0-60V as referenced to Battery negative - unclear where the connections are for these inputs, appear to be inaccessible.
 
 # DSSR20 Solid State Relay
 
-The DSSR20 is a low-cost solid state switch with one or two twists. The first twist is the presence of an "ideal" (low-loss) diode in the PV-Battery path: this is advantageous in terms of mitigating certain types of failures that can occur on the PV side such as cabling shorts. The second twist is that it is available in a version that adds facility to switch a secondary resistive load - very useful for "heating diversion" as described above. The PV Disconnect functional diagram is as follows:
+As with the SBMS0, the DSSR20 is occasionally updated. The following pertains to the DSSR20 v04d, ca. late 2019.
+
+The DSSR20 is a low-cost solid state switch with one or two twists. The first twist is the presence of an "ideal" (low-loss) diode in the PV-Battery path: this is advantageous in terms of mitigating certain types of failures that can occur on the PV side such as cabling shorts. The second twist is that it is available in a version that adds facility to switch a secondary resistive load - very useful for "heating diversion" as described above.
+
+The DSSR20 functional diagram is as follows:
 
 ![DSSR20 ideal diagram](DSSR20_ideal_diagram.png)
 
@@ -290,7 +300,7 @@ The DSSR20 is designed to handle up to two commonly available panels - typically
 
 ## Non-Standard Configurations
 
-The DSSR20 can handle 20A via the Battery output and 10A (?TBC) via the Heat output. Multiple DSSR20's can be placed in parallel to increase current capacity (internally, the PV to Battery+ path is two pairs of MOSFETs in parallel controlled by one IC, a parallel DSSR20 essentially adds another two pair in parallel - though with the distinction that a loose wire could cause the control signals to not be in sync and thus give rise to an overload of one of the DSSRs). The practical limit - before imbalances due to wiring resistances, etc become a problem - would be two DSSR20's. If for your use case you need to carry more than 20A, it may be more economical to use a Victron BatteryProtect instead of two DSSR20's - though note the BatteryProtect does *not* incorporate an ideal diode, so appropriate fusing is essential and even then any shorts on the PV side will likely toast the BatteryProtect as it cannot handle reverse currents.
+The DSSR20 can handle 20A via the Battery output and 10A (?TBC) via the Heat output. Multiple DSSR20's can be placed in parallel to increase current capacity (internally, the PV to Battery+ path is two pairs of MOSFETs in parallel controlled by one IC, a parallel DSSR20 essentially adds another two pair in parallel - though with the distinction that a loose wire could cause the control signals to not be in sync and thus give rise to an overload of one of the DSSRs). The practical limit - before imbalances due to wiring resistances, etc become a problem - would be two DSSR20's. If for your use case you need to carry more than 20A, it may be more economical to use a Victron BatteryProtect instead of two DSSR20's - though note the BatteryProtect does *not* incorporate an ideal diode, so appropriate fusing is essential and even then any shorts on the PV side may toast the BatteryProtect as it is not designed to handle reverse currents.
 
 Fusing on the PV side may still be required depending on the panel topology and characteristics, for example if two panels are used and they are not rated to handle the maximum combined current, a fuse on each panel should be used at the panel combiner junction.
 
