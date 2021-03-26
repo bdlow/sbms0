@@ -30,6 +30,7 @@
       - [Type 6 Dual PV Control](#type-6-dual-pv-control)
   - [Isolated Data Header](#isolated-data-header)
 - [DSSR20 Solid State Relay](#dssr20-solid-state-relay)
+  - [DSSR20 Physical Connections](#dssr20-physical-connections)
   - [The Ideal Diode and Fusing](#the-ideal-diode-and-fusing)
   - [Non-Standard Configurations](#non-standard-configurations)
 - [Using the SBMS0](#using-the-sbms0)
@@ -282,11 +283,12 @@ The DSSR20 functional diagram is as follows:
 
 The Heat diversion path is not protected by an ideal diode, and is not designed to connect to an "active load" - one that can source current back to the PV. i.e. do not connect a power source such as a battery to this connection; passive loads only. Further, the load is not rated for reactive (inductive or capacitive) loads, so no motors or inverters. The Heat diversion control input is separate to the Battery control input; in the intended use case they would be logically inverted. i.e. when Battery is on, Heat is off and vice-versa. The DEXT16 module implements this logic given a single EXTIO output from the SBMS0. The DEXT16 also provides screw terminals and can make for a tidier installation when multiple DSSR20s are used.
 
-The DSSR20 is powered from the PV input with a voltage monitoring reset IC that ensures it only operates when sufficient voltage is available. The MOSFET switches are off / open when the DSSR20 is not powered.
+The DSSR20 is powered from the PV input with a voltage monitoring reset IC that ensures it only operates when sufficient voltage is available. The MOSFET switches are off (open) when the DSSR20 is not powered. The DSSR20 is protected against reverse PV polarity, both the DSSR20 itself and the Battery and Heat outputs. Power dissipation should be less than 2W under all operating conditions, and no heatsinking or forced cooling is required.
 
-The DSSR20 is protected against reverse PV polarity, both the DSSR20 itself and the Battery and Heat outputs.
+## DSSR20 Physical Connections
 
-Power dissipation should be less than 2W under all operating conditions, and no heatsinking or forced cooling is required.
+The DSSR20 has four large spring gauge terminals labelled PV+, Heat+, Battery+ and Battery-. Despite their physical orientation the terminals are not "paired". There is also one small pair of spring gauge terminals labelled Batt and Heat for control of the respective outputs. The large terminals can work with wire sizes from 0.75mm² (18AWG) to 16mm² (6AWG); PV+ and Battery+ connections should be sufficient to carry the current from the panels (e.g. 4mm² (~10AWG)); the Battery- connection only powers the DSSR20 and can be much smaller, e.g. ~1.5-2mm² (16-14AWG). The Heat+ output and Heat control signals are used for Heat diversion, if fitted. The control terminal wire may be between 0.2mm² (AWG24) and 0.8mm²
+(18AWG), either solid or stranded wire; ferrules are recommended for the latter.
 
 ## The Ideal Diode and Fusing
 
