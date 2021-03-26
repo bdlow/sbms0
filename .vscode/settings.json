@@ -30,6 +30,7 @@
         "optocoupled",
         "optocoupler",
         "photorelays",
-        "sbms"
+        "sbms",
+        "sbmso"
     ]
 }
